@@ -1,0 +1,44 @@
+{
+  "name": "frontend",
+  "version": "0.0.1",
+  "description": "SPA for the KMS project",
+  "main": "index.js",
+  "scripts": {
+    "flow": "flow",
+    "start": "webpack-dev-server",
+    "production-build": "webpack"
+  },
+  "author": "Mariusz Zakrzewski",
+  "license": "ISC",
+  "dependencies": {
+    "amdefine": "1.0.1",
+    "bootstrap-tagsinput": "0.7.1",
+    "codemirror": "5.36.0",
+    "css-loader": "0.28.11",
+    "highlight.js": "9.12.0",
+    "html-webpack-plugin": "2.30.1",
+    "popper.js": "1.12.9",
+    "react": "15.6.2",
+    "react-dom": "15.6.2",
+    "react-router-dom": "4.2.2",
+    "squire-rte": "1.8.14",
+    "style-loader": "0.20.3",
+    "tui-editor": "1.0.2",
+    "uglifyjs-webpack-plugin": "1.2.4"
+  },
+  "devDependencies": {
+    "babel": "6.23.0",
+    "babel-cli": "6.26.0",
+    "babel-core": "6.26.0",
+    "babel-loader": "7.1.1",
+    "babel-preset-es2015": "6.24.1",
+    "babel-preset-react": "6.24.1",
+    "file-loader": "1.1.11",
+    "image-webpack-loader": "4.2.0",
+    "json-loader": "0.5.7",
+    "url-loader": "1.0.1",
+    "webpack": "3.1.0",
+    "webpack-dev-server": "2.2.0",
+    "webpack-merge": "4.1.2"
+  }
+}
