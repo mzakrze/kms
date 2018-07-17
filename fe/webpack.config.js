@@ -38,12 +38,13 @@ var webpackConfig = {
     ],
   },
   devServer: {
+    host: "0.0.0.0",
     port: 3000,
     historyApiFallback: true, 
     contentBase: './',
     proxy: { // proxy URLs to backend development server
       '/api/**': {
-        target: 'http://localhost:8080'
+        target: 'http://0.0.0.0:8080'
       },
     },
   },
