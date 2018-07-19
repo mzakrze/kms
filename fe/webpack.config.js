@@ -5,7 +5,16 @@ const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
   filename: 'index.html',
   inject: 'body'
 })
-const fs = require('fs')
+const fs = require('fs');
+const APP_VERSION = fs.readFileSync("VERSION", { encoding: 'utf8' });
+console.log('app version is: ' + APP_VERSION)
+
+const DefinePlugin = new webpack.DefinePlugin({
+  CONFIG_APP_VERSION: JSON.stringify(APP_VERSION + "-dev"),
+});
+
+const { execSync } = require('child_process');
+let hostIp = ('' + execSync("ip r | awk '/default/{print $3}'")).trim();
 
  // node@8.0.0
  // npm@6.1.0
@@ -44,12 +53,13 @@ var webpackConfig = {
     contentBase: './',
     proxy: { // proxy URLs to backend development server
       '/api/**': {
-        target: 'http://0.0.0.0:8080'
+        target: 'http://' + hostIp + ':8080'
       },
     },
   },
   plugins: [
     HtmlWebpackPluginConfig,
+    DefinePlugin 
     ]
 }
 

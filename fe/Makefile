@@ -2,7 +2,8 @@ all:
 	build & start
 
 start:
-	docker container run --name fe -it -p 3000:3000  \
+	docker container run --name fe -it -p 3000:3000 \
+		-v $(shell pwd)/../VERSION:/usr/frontend_app/VERSION \
 		-v $(shell pwd)/package.json:/usr/frontend_app/package.json \
 		-v $(shell pwd)/webpack.config.js:/usr/frontend_app/webpack.config.js \
 		-v $(shell pwd)/webpack.prod.js:/usr/frontend_app/webpack.prod.js \
