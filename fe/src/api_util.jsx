@@ -38,7 +38,11 @@ const preAuthenticatedRequest = (xmlHttpRequest) => {
 }
 
 const postResponse = (xmlHttpResonse) => {
-    
+
+}
+
+export function beforeSend(xmlHttpRequest){
+    setJwtToken(xmlHttpRequest);
 }
 
 const setJwtToken = (xmlHttpRequest: any) => {

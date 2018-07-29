@@ -1,11 +1,55 @@
 /* @flow */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter as Router, Route, Switch, withRouter, Redirect } from 'react-router-dom';
+import WelcomeUnknownPage from './components/WelcomeUnknownPage.jsx'
+import { beforeSend } from './api_util.jsx';
 
-import * as api from './api.jsx';
+const api = {
+    getCurrentUser: () => {
+        return $.ajax({
+            url: '/api/v1/user/current',
+            type: "GET",
+            beforeSend: beforeSend,
+            async: true,
+            headers: {"Content-Type": "application/json"},
+        });
+    },
+    goTryMode: () => {
+        return $.ajax({
+            url: '/api/v1/user/try_mode',
+            type: "POST",
+            async: true,
+            headers: {"Content-Type": "application/json"},
+        });
+    },
+    attemptLogin: (email: string, password: string) => {
+        return $.ajax({
+            url: '/api/v1/user/login',
+            type: "POST",
+            data: JSON.stringify({email, password}),
+            async: true,
+            headers: {"Content-Type": "application/json"},
+        });
+    },
+    attemptRegister: (email: string, password: string) => {
+        return $.ajax({
+            url: '/api/v1/user/register',
+            type: "POST",
+            data: JSON.stringify({email, password}),
+            async: true,
+            headers: {"Content-Type": "application/json"},
+        }); 
+    }
+}
 
 type Props = {
 
+}
+
+type CurrentUser = {
+    gid: string,
+    isInTryMode: boolean,
 }
 
 class App extends React.Component<Props> {
@@ -13,98 +57,77 @@ class App extends React.Component<Props> {
     constructor(props){
         super(props);
         this.state = {
-            login: 'test',
-            password: '123456',
-            loginResponse: null,
-            title: 'title1',
-            description: 'description1',
-            toDelete: null,
-            myTasks: []
+            currentUser: null,
         }
     }
 
-    handleInputChanged(key, val){
-        let s = this.state;
-        s[key] = val;
-        this.setState(s);
-    }
-
-    renderLogin(){
-        let handleLogin = () => {
-            let login = this.state.login;
-            let password = this.state.password;
-            $.ajax({
-                url: '/api/v1/user/login',
-                type: "POST",
-                data: JSON.stringify({login, password}),
-                async: true,
-                headers: {"Content-Type": "application/json"},
-            }).done((data, status, resp) => {
+    handleLogin(email, password) {
+        api.attemptLogin(email, password)
+            .done((data, status, resp) => {
                 let jwt = resp.getResponseHeader('Authentication');
                 localStorage.setItem('JwtAuthentication', jwt);
-            })
-        }
-        let handleLogout = () => {
-            localStorage.removeItem('JwtAuthentication');
-        }
-        return [
-            <input onChange={(ev) => this.handleInputChanged('login', ev.target.value)} placeholder="login" defaultValue={this.state.login}/>,
-            <input onChange={(ev) => this.handleInputChanged('password', ev.target.value)} placeholder="password" defaultValue={this.state.password}/>,
-            <button onClick={handleLogin}>Login</button>,
-            <button onClick={handleLogout}>Logout</button>,
-            <div>
-                {this.state.loginResponse}
-            </div>
-        ];
-    }
-
-    renderFetchMyTasks(){
-        let handleUpdate = () => {
-            api.fetchMyTasks()
-                .done((data, status, resp) => {
-                    this.setState({
-                        myTasks: data
-                    })
+                this.setState({
+                    currentUser: data
                 })
-        }
-        return [
-            <button onClick={handleUpdate}> update </button>,
-            <p>{JSON.stringify(this.state.myTasks)}</p>
-        ];
+            });
     }
 
-    renderCreateNewTask(){
-        let handleCreate = () => {
-            api.createNewTask(this.state.title, this.state.description);
-        }
-        return [
-            <input onChange={(ev) => this.handleInputChanged('title', ev.target.value)} placeholder="title" defaultValue={this.state.title}/>,
-            <input onChange={(ev) => this.handleInputChanged('description', ev.target.value)} placeholder="description" defaultValue={this.state.description}/>,
-            <button onClick={handleCreate}>create</button>,
-        ];
+    handleRegister(email, password) {
+        api.attemptRegister(email, password)
+            .done((data, status, resp) => {
+                let jwt = resp.getResponseHeader('Authentication');
+                localStorage.setItem('JwtAuthentication', jwt);
+                this.setState({
+                    currentUser: data
+                })
+            });
     }
 
-    renderDelete(){
-        let handleDelete = () => {
-            api.deleteTask(this.state.toDelete)
-        }
-        return [
-            <input onChange={(ev) => this.handleInputChanged('toDelete', ev.target.value)} placeholder="toDelete" defaultValue={this.state.toDelete}/>,
-            <button onClick={handleDelete}>delete</button>,
-        ];
+    handleTryMode() {
+        api.goTryMode()
+            .done((data, status, resp) => {
+                this.setState({
+                    currentUser: data
+                })
+            });
+    }
+
+    handleLogout() {
+        localStorage.removeItem('JwtAuthentication');
+        window.location = '/'
+    }
+
+    componentDidMount(){
+        api.getCurrentUser()
+            .done((data, status, resp) => {
+                this.setState({
+                    currentUser: data
+                })
+            })
     }
 
     render() {
+        if(this.state.currentUser == null || this.state.currentUser.gid == null) {
+            return <WelcomeUnknownPage 
+                attemptLogin={this.handleLogin.bind(this)}
+                attemptRegister={this.handleRegister.bind(this)}
+                attemptGoTryMode={this.handleTryMode.bind(this)} />
+        }
+
         return (<div>
-            {this.renderLogin()}
-            <hr />
-            {this.renderFetchMyTasks()}
-            <hr />
-            {this.renderCreateNewTask()}
-            <hr />
-            {this.renderDelete()}
-            </div>)
-        return (<p> Hello World </p>);
+                <p> you are logged in {JSON.stringify(this.state.currentUser)} xd :) </p>
+                <button onClick={this.handleLogout.bind(this)}>Logout</button>
+                </div>);
+
+        // return (<Router>
+        //     <Switch>
+        //         <Route exact path="/" render={this.renderEmptyPage.bind(this)} />
+        //         <Route path="/doc/:docGid" render={this.renderDocumentEditorPage.bind(this)} />
+        //         <Route path="/drive" render={this.renderDrivePage.bind(this)} />
+        //         <Route path="/teams" render={this.renderTeamsPage.bind(this)} />
+        //         <Route path="/my-account" render={this.renderMyAccountPage.bind(this)} />
+        //     </Switch>
+        // </Router>);
     }
 }
 
