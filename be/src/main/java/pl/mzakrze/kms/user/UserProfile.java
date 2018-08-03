@@ -1,26 +1,30 @@
 package pl.mzakrze.kms.user;
 
-import javax.persistence.*;
+import org.hibernate.annotations.GenericGenerator;
 
-import static javax.persistence.GenerationType.IDENTITY;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "user_profile")
 public class UserProfile {
-    private Integer id;
-    private String login;
+    private String gid;
+    private String email;
     private String password;
+    private String loginToken;
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "id", nullable = false)
-    public Integer getId() {
-        return id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator")
+    @Column(name = "gid", unique = true, nullable = false, updatable = false)
+    public String getGid() {
+        return gid;
     }
 
-    @Column(name = "login", nullable = false)
-    public String getLogin() {
-        return login;
+    @Column(name = "email", nullable = false)
+    public String getEmail() {
+        return email;
     }
 
     @Column(name = "password", nullable = false)
@@ -28,12 +32,21 @@ public class UserProfile {
         return password;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    @Column(name = "login_token")
+    public String getLoginToken() {
+        return loginToken;
     }
 
-    public void setLogin(String login) {
-        this.login = login;
+    public void setGid(String gid) {
+        this.gid = gid;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setLoginToken(String loginToken) {
+        this.loginToken = loginToken;
     }
 
     public void setPassword(String password) {

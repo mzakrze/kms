@@ -1,1 +1,0 @@
-insert into user_profile(id, login, password) values(1, 'test','$2a$10$Grp2sb6nOgfVBDE.vhiE2O7c5STjvztQoGCPUgdHp./MDBhCXnpsy');

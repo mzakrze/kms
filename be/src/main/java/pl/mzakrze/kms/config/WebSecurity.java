@@ -1,5 +1,7 @@
 package pl.mzakrze.kms.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,47 +10,52 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.context.annotation.Bean;
-import pl.mzakrze.kms.api.ApiConstants;
-import pl.mzakrze.kms.api.v1.AppVersionDispatcher;
+import pl.mzakrze.kms.config.auth.EmailPasswordAuthenticationFilter;
+import pl.mzakrze.kms.config.auth.JwtAuthenticationFilter;
+import pl.mzakrze.kms.config.auth.MyAuthenticationProvider;
+import pl.mzakrze.kms.config.auth.UserRoles;
+import pl.mzakrze.kms.user.UserProfileRepository;
 
 @EnableWebSecurity
 public class WebSecurity extends WebSecurityConfigurerAdapter {
+
     private UserDetailsService userDetailsService;
+
+    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public WebSecurity(UserDetailsService userDetailsService, BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.userDetailsService = userDetailsService;
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    @Autowired
+    private MyAuthenticationProvider myAuthenticationProvider;
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
+
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-            .cors()
-            .and()
-            .csrf().disable().authorizeRequests()
-            .antMatchers(HttpMethod.GET, "/static/**").permitAll() // FIXME tylko po ssl'u
-            .antMatchers(HttpMethod.GET, "/favicon.ico").permitAll() // FIXME favicon in static/**
-            .antMatchers(HttpMethod.GET, "/").permitAll() // permit getting index.html
-            .antMatchers(HttpMethod.GET, "/bundle.js").permitAll()
-            .antMatchers(HttpMethod.GET, AppVersionDispatcher.APP_VERSION_URL).permitAll()
-            .antMatchers(HttpMethod.GET, ApiConstants.API_V1 + "/users/current").permitAll()
-            .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL).permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .addFilter(new EmailPasswordAuthenticationFilter(authenticationManager()))
-            .addFilter(new JwtAuthenticationFilter(authenticationManager(), userDetailsService))
+            .cors().and().csrf().disable()
+                .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/public").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/admin").hasRole(UserRoles.ADMIN)
+                .antMatchers(HttpMethod.GET, "/api/user/current").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/user/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/user/register").permitAll()
+                .anyRequest().hasRole(UserRoles.USER)
+                .and()
+                .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new EmailPasswordAuthenticationFilter(userProfileRepository, bCryptPasswordEncoder), UsernamePasswordAuthenticationFilter.class)
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+        auth.authenticationProvider(myAuthenticationProvider);
     }
 
     @Bean
