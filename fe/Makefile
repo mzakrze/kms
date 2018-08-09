@@ -1,7 +1,7 @@
 all:
 	build & start
 
-start:
+build-frontend:
 	docker container run --name fe -it -p 3000:3000 \
 		-v $(shell pwd)/../VERSION:/usr/frontend_app/VERSION \
 		-v $(shell pwd)/package.json:/usr/frontend_app/package.json \
@@ -10,7 +10,19 @@ start:
 		-v $(shell pwd)/.babelrc:/usr/frontend_app/.babelrc \
 		-v $(shell pwd)/.flowconfig:/usr/frontend_app/.flowconfig \
 		-v $(shell pwd)/src:/usr/frontend_app/src \
+		-v $(shell pwd)/dist:/usr/frontend_app/dist \
+	 	fe /bin/bash -c "npm run production-build; cp -R /dist ." 
+
+start:
+	docker container run --name fe -it -p 3000:3000 \
+		-v $(shell pwd)/../VERSION:/usr/frontend_app/VERSION \
+		-v $(shell pwd)/package.json:/usr/frontend_app/package.json \
+		-v $(shell pwd)/webpack.config.js:/usr/frontend_app/webpack.config.js \
+		-v $(shell pwd)/.babelrc:/usr/frontend_app/.babelrc \
+		-v $(shell pwd)/.flowconfig:/usr/frontend_app/.flowconfig \
+		-v $(shell pwd)/src:/usr/frontend_app/src \
 	 	fe npm run start
+	 
 
 stop: # TODO - make it gracefull
 	docker container kill fe
