@@ -40,6 +40,9 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http
             .cors().and().csrf().disable()
                 .authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/").permitAll() // index.html
+                .antMatchers(HttpMethod.GET, "/bundle.js").permitAll()
+                .antMatchers(HttpMethod.GET, "/static/**").permitAll() // FIXME tylko po ssl'u (także / i /bundle.js)
                 .antMatchers(HttpMethod.GET, "/api/public").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/admin").hasRole(UserRoles.ADMIN)
                 .antMatchers(HttpMethod.GET, "/api/user/current").permitAll()
