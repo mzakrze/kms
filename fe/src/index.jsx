@@ -3,21 +3,24 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter as Router, Route, Switch, withRouter, Redirect } from 'react-router-dom';
 import WelcomeUnknownPage from './components/WelcomeUnknownPage.jsx'
-import { beforeSend } from './api_util.jsx';
+import DrivePage from './components/DrivePage.jsx'
+import Header from './components/Header.jsx'
+import * as util from './util.jsx';
+
 
 const api = {
     getCurrentUser: () => {
         return $.ajax({
-            url: '/api/v1/user/current',
+            url: '/api/user/current',
             type: "GET",
-            beforeSend: beforeSend,
+            beforeSend: util.beforeSendRequest,
             async: true,
             headers: {"Content-Type": "application/json"},
         });
     },
     goTryMode: () => {
         return $.ajax({
-            url: '/api/v1/user/try_mode',
+            url: '/api/user/try_mode',
             type: "POST",
             async: true,
             headers: {"Content-Type": "application/json"},
@@ -25,7 +28,7 @@ const api = {
     },
     attemptLogin: (email: string, password: string) => {
         return $.ajax({
-            url: '/api/v1/user/login',
+            url: '/api/user/login',
             type: "POST",
             data: JSON.stringify({email, password}),
             async: true,
@@ -34,7 +37,7 @@ const api = {
     },
     attemptRegister: (email: string, password: string) => {
         return $.ajax({
-            url: '/api/v1/user/register',
+            url: '/api/user/register',
             type: "POST",
             data: JSON.stringify({email, password}),
             async: true,
@@ -47,9 +50,10 @@ type Props = {
 
 }
 
-type CurrentUser = {
+export type CurrentUser = {
     gid: string,
     isInTryMode: boolean,
+    anonymous: boolean,
 }
 
 class App extends React.Component<Props> {
@@ -107,27 +111,30 @@ class App extends React.Component<Props> {
     }
 
     render() {
-        if(this.state.currentUser == null || this.state.currentUser.gid == null) {
+        if(this.state.currentUser == null || this.state.currentUser.anonymous == null) {
             return <WelcomeUnknownPage 
                 attemptLogin={this.handleLogin.bind(this)}
                 attemptRegister={this.handleRegister.bind(this)}
                 attemptGoTryMode={this.handleTryMode.bind(this)} />
         }
+        
+        return (<Router>
+            <Switch>
+                <Route path="/" render={this.renderDrivePage.bind(this)} />
+            </Switch>
+        </Router>);
+    }
 
+    renderDrivePage(routerProps){
+        // strona domyślna - zmień url
+        //debugger;
+        if(routerProps.location.pathname != '/drive'){
+            routerProps.history.push('drive')
+        }
         return (<div>
-                <p> you are logged in {JSON.stringify(this.state.currentUser)} xd :) </p>
-                <button onClick={this.handleLogout.bind(this)}>Logout</button>
-                </div>);
-
-        // return (<Router>
-        //     <Switch>
-        //         <Route exact path="/" render={this.renderEmptyPage.bind(this)} />
-        //         <Route path="/doc/:docGid" render={this.renderDocumentEditorPage.bind(this)} />
-        //         <Route path="/drive" render={this.renderDrivePage.bind(this)} />
-        //         <Route path="/teams" render={this.renderTeamsPage.bind(this)} />
-        //         <Route path="/my-account" render={this.renderMyAccountPage.bind(this)} />
-        //     </Switch>
-        // </Router>);
+            <Header />
+            <DrivePage />
+            </div>);
     }
 }
 
