@@ -7,7 +7,7 @@ public class DriveTree_out {
     public Folder root;
     public String ownerGid;
 
-    class Document {
+    public static class Document {
         public final String type = "document";
         public String name;
         public String gid;
@@ -15,15 +15,16 @@ public class DriveTree_out {
         public String lastEditedTs;
     }
 
-    class Folder {
+    public static class Folder {
         public final String type = "folder";
         public String name;
         public String gid;
-        List<Document> documents;
-        List<Blob> blobs;
+        public List<Document> documents;
+        public List<Folder> folders;
+        public List<Blob> blobs;
     }
 
-    class Blob {
+    public static class Blob {
         public final String type = "blob";
         public String name;
         public String gid;
