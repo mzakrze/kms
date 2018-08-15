@@ -3,15 +3,14 @@ package pl.mzakrze.kms.user_drive.model;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "document")
 public class Document {
     private String gid;
     private String title;
-    private String content;
-    private Folder folder;
+    private String content; // FIXME - make it a blob
+    private Folder parentFolder;
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -34,9 +33,9 @@ public class Document {
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @PrimaryKeyJoinColumn(name = "folder_gid")
-    public Folder getFolder() {
-        return folder;
+    @PrimaryKeyJoinColumn(name = "parent_folder_gid")
+    public Folder getParentFolder() {
+        return parentFolder;
     }
 
 
@@ -52,7 +51,7 @@ public class Document {
         this.content = content;
     }
 
-    public void setFolder(Folder folder) {
-        this.folder = folder;
+    public void setParentFolder(Folder parentFolder) {
+        this.parentFolder = parentFolder;
     }
 }

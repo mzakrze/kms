@@ -1,8 +1,8 @@
-package pl.mzakrze.kms.model;
+package pl.mzakrze.kms.api.model;
 
-public class LoginAttempt_in {
-    String email;
-    String password;
+public class RegisterAttempt_in {
+    public String email;
+    public String password;
 
     public String getEmail() {
         return email;

@@ -48,7 +48,7 @@ public class JwTokenAuthenticationTest {
         ResponseEntity<CurrentUser_out> currentUserResponse = restTemplate.exchange(
                 "/api/user/current", HttpMethod.GET, entity, CurrentUser_out.class, "");
 
-        // than
+        // then
         assert currentUserResponse.getBody().isAnonymous;
 
         // cleanup

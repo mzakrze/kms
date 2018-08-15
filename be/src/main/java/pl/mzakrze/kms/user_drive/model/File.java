@@ -10,7 +10,7 @@ import java.sql.Blob;
 public class File {
     private String gid;
     private String name;
-    private Folder folder;
+    private Folder parentFolder;
     private Blob content;
 
     @Id
@@ -24,9 +24,9 @@ public class File {
     }
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @PrimaryKeyJoinColumn(name = "folder_gid")
-    public Folder getFolder() {
-        return folder;
+    @PrimaryKeyJoinColumn(name = "parent_folder_gid")
+    public Folder getParentFolder() {
+        return parentFolder;
     }
 
     @Column(name = "content")
@@ -48,8 +48,8 @@ public class File {
         this.name = name;
     }
 
-    public void setFolder(Folder folder) {
-        this.folder = folder;
+    public void setParentFolder(Folder parentFolder) {
+        this.parentFolder = parentFolder;
     }
 
     public void setContent(Blob content) {

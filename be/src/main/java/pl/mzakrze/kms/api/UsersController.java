@@ -5,12 +5,20 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.Data;
 import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import pl.mzakrze.kms.api.model.LoginAttempt_out;
+import pl.mzakrze.kms.api.model.RegisterAttempt_in;
 import pl.mzakrze.kms.config.SecurityConstants;
+import pl.mzakrze.kms.user.JwtFacade;
 import pl.mzakrze.kms.user.UserProfile;
+import pl.mzakrze.kms.user.UserProfileFacade;
 import pl.mzakrze.kms.user.UserProfileRepository;
+import pl.mzakrze.kms.user.exceptions.EmailAlreadyExistsException;
+import pl.mzakrze.kms.user.exceptions.IllegalPasswordException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.sql.Date;
@@ -21,6 +29,9 @@ public class UsersController {
 
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired private UserProfileRepository userProfileRepository;
+
+    @Autowired private UserProfileFacade userProfileFacade;
+    @Autowired private JwtFacade jwtFacade;
 
 
     @GetMapping("/current")
@@ -37,27 +48,20 @@ public class UsersController {
     }
 
     @PostMapping("/register")
-    public String register(@RequestBody RegisterAttempt_in req, HttpServletResponse response){
+    public ResponseEntity register(@RequestBody RegisterAttempt_in req, HttpServletResponse response){
+        try{
+            UserProfile newUser = userProfileFacade.registerUser(req.email, req.password);
 
-        String encodedPasswd = bCryptPasswordEncoder.encode(req.password);
+            String loginToken = newUser.getLoginToken();
 
-        String tmpJwToken = RandomStringUtils.randomAlphabetic(20);
+            jwtFacade.setAuthenticationHeader(loginToken, response);
 
-        UserProfile newlyRegisteredUser = new UserProfile();
-        newlyRegisteredUser.setPassword(encodedPasswd);
-        newlyRegisteredUser.setEmail(req.email);
-        newlyRegisteredUser.setLoginToken(tmpJwToken);
-
-        userProfileRepository.save(newlyRegisteredUser);
-
-        String token = Jwts.builder()
-                .setSubject(tmpJwToken)
-                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET.getBytes())
-                .compact();
-        response.addHeader(SecurityConstants.AUTHENTICATION_HEADER, SecurityConstants.TOKEN_PREFIX + token);
-
-        return "OK";
+            return ResponseEntity.status(HttpStatus.OK).build();
+        } catch(EmailAlreadyExistsException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        } catch (IllegalPasswordException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @PostMapping("/login")
@@ -71,26 +75,7 @@ public class UsersController {
         return res;
     }
 // TODO - lombok nie działa w testach
-    static class RegisterAttempt_in {
-        String email;
-        String password;
 
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-    }
 
     static class CurrentUser_out {
         Boolean isAnonymous;

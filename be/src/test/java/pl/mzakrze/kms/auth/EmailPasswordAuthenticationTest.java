@@ -15,10 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import pl.mzakrze.kms.api.model.LoginAttempt_in;
 import pl.mzakrze.kms.api.model.LoginAttempt_out;
 import pl.mzakrze.kms.config.SecurityConstants;
 import pl.mzakrze.kms.model.CurrentUser_out;
-import pl.mzakrze.kms.model.LoginAttempt_in;
 import pl.mzakrze.kms.user.UserProfile;
 import pl.mzakrze.kms.user.UserProfileRepository;
 

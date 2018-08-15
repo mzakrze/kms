@@ -14,6 +14,7 @@ public class KmsApplication {
 
 	@Bean
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
+		// FIXME - zmienić secret i wynieść
 		return new BCryptPasswordEncoder();
 	}
 }

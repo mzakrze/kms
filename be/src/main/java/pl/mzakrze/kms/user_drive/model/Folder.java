@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Folder {
     private String gid;
     private String name;
-    private Folder parent;
+    private Folder parentFolder;
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -22,9 +22,9 @@ public class Folder {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @PrimaryKeyJoinColumn(name = "parent_id")
-    public Folder getParent() {
-        return parent;
+    @PrimaryKeyJoinColumn(name = "parent_folder_id")
+    public Folder getParentFolder() {
+        return parentFolder;
     }
 
     @Column(name = "name")
@@ -37,8 +37,8 @@ public class Folder {
         this.gid = gid;
     }
 
-    public void setParent(Folder parent) {
-        this.parent = parent;
+    public void setParentFolder(Folder parentFolder) {
+        this.parentFolder = parentFolder;
     }
 
     public void setName(String name) {
