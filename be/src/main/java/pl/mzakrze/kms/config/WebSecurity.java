@@ -48,7 +48,7 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/api/user/current").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/user/register").permitAll()
-                .anyRequest().hasRole(UserRoles.USER)
+                .anyRequest().hasAuthority(UserRoles.USER_AUTHORITY.getAuthority())
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(new EmailPasswordAuthenticationFilter(userProfileRepository, bCryptPasswordEncoder), UsernamePasswordAuthenticationFilter.class)

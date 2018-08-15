@@ -7,17 +7,22 @@ import org.springframework.stereotype.Service;
 import pl.mzakrze.kms.user.exceptions.EmailAlreadyExistsException;
 import pl.mzakrze.kms.user.exceptions.IllegalPasswordException;
 import pl.mzakrze.kms.user_drive.model.Document;
+import pl.mzakrze.kms.user_drive.model.File;
 import pl.mzakrze.kms.user_drive.model.Folder;
 import pl.mzakrze.kms.user_drive.model.UserSpace;
 import pl.mzakrze.kms.user_drive.repository.DocumentRepository;
+import pl.mzakrze.kms.user_drive.repository.FileRepository;
 import pl.mzakrze.kms.user_drive.repository.FolderRepository;
 import pl.mzakrze.kms.user_drive.repository.UserSpaceRepository;
+
+import java.util.List;
 
 @Service
 public class UserProfileFacade {
     @Autowired private UserProfileRepository userProfileRepository;
     @Autowired private UserSpaceRepository userSpaceRepository;
     @Autowired private FolderRepository folderRepository;
+    @Autowired private FileRepository fileRepository;
     @Autowired private DocumentRepository documentRepository;
     @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -59,5 +64,34 @@ public class UserProfileFacade {
         userProfileRepository.save(userProfile);
 
         return userProfile;
+    }
+
+    public void closeAccountPermanently(UserProfile userProfile) {
+        List<UserSpace> userSpaces = userSpaceRepository.findByUserProfile(userProfile);
+        userProfile.setCurrentUserSpace(null);
+        userProfileRepository.save(userProfile);
+        for (UserSpace userSpace : userSpaces) {
+            Folder rootFolder = userSpace.getRootFolder();
+            clearPermanentlyFolderRecursively(rootFolder);
+            userSpace.setRootFolder(null);
+            userSpaceRepository.save(userSpace);
+            folderRepository.delete(rootFolder);
+        }
+        userSpaceRepository.delete(userSpaces);
+        userProfileRepository.delete(userProfile);
+    }
+
+    private void clearPermanentlyFolderRecursively(Folder folder) {
+        List<Document> documents = documentRepository.findByParentFolder(folder);
+        List<Folder> folders = folderRepository.findByParentFolder(folder);
+        List<File> files = fileRepository.findByParentFolder(folder);
+
+        documentRepository.delete(documents);
+        fileRepository.delete(files);
+
+        for (Folder f : folders) {
+            clearPermanentlyFolderRecursively(f);
+            folderRepository.delete(f);
+        }
     }
 }

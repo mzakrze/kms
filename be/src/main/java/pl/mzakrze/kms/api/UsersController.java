@@ -64,6 +64,13 @@ public class UsersController {
         }
     }
 
+    @PostMapping("/close_account")
+    public ResponseEntity closeAccount(UserProfile userProfile, HttpServletResponse response){
+        userProfileFacade.closeAccountPermanently(userProfile);
+
+        return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
     @PostMapping("/login")
     public LoginAttempt_out login(UserProfile user, HttpServletResponse response){
         LoginAttempt_out res = new LoginAttempt_out();
@@ -74,6 +81,11 @@ public class UsersController {
         }
         return res;
     }
+
+
+
+
+
 // TODO - lombok nie działa w testach
 
 

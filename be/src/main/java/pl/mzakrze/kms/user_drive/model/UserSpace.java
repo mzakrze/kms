@@ -41,7 +41,7 @@ public class UserSpace {
         return password;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = true) // TODO - zmienić na optional = false
     @PrimaryKeyJoinColumn(name = "root_folder_gid")
     public Folder getRootFolder() {
         return rootFolder;
