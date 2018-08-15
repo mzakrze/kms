@@ -1,4 +1,4 @@
-package pl.mzakrze.kms;
+package pl.mzakrze.kms.auth;
 
 import org.junit.After;
 import org.junit.Before;

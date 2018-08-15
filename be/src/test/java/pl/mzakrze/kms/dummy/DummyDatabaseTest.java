@@ -1,4 +1,4 @@
-package pl.mzakrze.kms;
+package pl.mzakrze.kms.dummy;
 
 import static org.junit.Assert.*;
 import org.junit.Test;

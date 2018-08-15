@@ -1,4 +1,4 @@
-package pl.mzakrze.kms;
+package pl.mzakrze.kms.auth;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
