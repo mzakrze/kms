@@ -12,7 +12,6 @@ public class UserProfile {
     private String email;
     private String password;
     private String loginToken;
-    private UserSpace currentUserSpace; // FIXME - zmienić optional na true (wymaga zrobienia w hibernacie deffered checka)
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -39,12 +38,6 @@ public class UserProfile {
         return loginToken;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER, optional = true, cascade=CascadeType.ALL)
-    @PrimaryKeyJoinColumn(name = "current_user_space")
-    public UserSpace getCurrentUserSpace() {
-        return currentUserSpace;
-    }
-
     public void setGid(String gid) {
         this.gid = gid;
     }
@@ -61,7 +54,4 @@ public class UserProfile {
         this.password = password;
     }
 
-    public void setCurrentUserSpace(UserSpace currentUserSpace) {
-        this.currentUserSpace = currentUserSpace;
-    }
 }

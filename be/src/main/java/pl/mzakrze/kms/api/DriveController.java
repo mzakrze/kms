@@ -67,7 +67,7 @@ public class DriveController {
     public ResponseEntity remove(UserProfile userProfile, @PathVariable("objectGid") String objectGid){
         if(documentRepository.exists(objectGid)){
             Document document = documentRepository.findOne(objectGid);
-            if(userDriveFacade.isInSpace(userProfile.getCurrentUserSpace(), document)){
+            if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), document)){
                 documentRepository.delete(document);
                 return ResponseEntity.ok().build();
             } else {
@@ -75,7 +75,7 @@ public class DriveController {
             }
         } else if(folderRepository.exists(objectGid)) {
             Folder folder = folderRepository.findOne(objectGid);
-            if(userDriveFacade.isInSpace(userProfile.getCurrentUserSpace(), folder)){
+            if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), folder)){
                 folderRepository.delete(folder);
                 return ResponseEntity.ok().build();
             } else {
@@ -83,7 +83,7 @@ public class DriveController {
             }
         } else if(fileRepository.exists(objectGid)) {
             File file = fileRepository.findOne(objectGid);
-            if(userDriveFacade.isInSpace(userProfile.getCurrentUserSpace(), file)){
+            if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), file)){
                 fileRepository.delete(file);
                 return ResponseEntity.ok().build();
             } else {
@@ -149,13 +149,13 @@ public class DriveController {
 
     @GetMapping("/tags")
     public List<String> allTagsInSpace(UserProfile userProfile){
-        return userDriveFacade.getTagsInUserSpace(userProfile.getCurrentUserSpace());
+        return userDriveFacade.getTagsInUserSpace(userDriveFacade.getCurrentSpace(userProfile));
     }
 
     @GetMapping("/tags/{documentGid}")
     public ResponseEntity documentsTags(UserProfile userProfile, @PathVariable String documentGid){
         Document document = documentRepository.findOne(documentGid);
-        if(userDriveFacade.isInSpace(userProfile.getCurrentUserSpace(), document) == false){
+        if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), document) == false){
             return ResponseEntity.notFound().build();
         }
         List<String> tags = tagRepository.findByDocument(document)

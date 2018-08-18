@@ -8,10 +8,7 @@ import pl.mzakrze.kms.user_drive.model.Document;
 import pl.mzakrze.kms.user_drive.model.File;
 import pl.mzakrze.kms.user_drive.model.Folder;
 import pl.mzakrze.kms.user_drive.model.UserSpace;
-import pl.mzakrze.kms.user_drive.repository.DocumentRepository;
-import pl.mzakrze.kms.user_drive.repository.FileRepository;
-import pl.mzakrze.kms.user_drive.repository.FolderRepository;
-import pl.mzakrze.kms.user_drive.repository.TagRepository;
+import pl.mzakrze.kms.user_drive.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,10 +21,13 @@ public class UserDriveFacade {
     @Autowired private FolderRepository folderRepository;
     @Autowired private FileRepository fileRepository;
     @Autowired private TagRepository tagRepository;
+    @Autowired private UserSpaceRepository userSpaceRepository;
+
+
 
 
     public DriveTree_out.Folder getCurrentSpaceDrive(UserProfile userProfile) {
-        UserSpace space = userProfile.getCurrentUserSpace();
+        UserSpace space = userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
         if(space == null){
             throw new IllegalStateException("User does not have set current_space");
         }
@@ -110,5 +110,9 @@ public class UserDriveFacade {
             res.addAll(buildTagsRecursively(f));
         }
         return res;
+    }
+
+    public UserSpace getCurrentSpace(UserProfile userProfile) {
+        return userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
     }
 }

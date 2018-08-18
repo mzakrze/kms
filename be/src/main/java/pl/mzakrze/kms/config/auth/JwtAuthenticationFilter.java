@@ -43,6 +43,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token != null) {
                 String user = Jwts.parser()
                         .setSigningKey(SecurityConstants.SECRET.getBytes())
+                        .setAllowedClockSkewSeconds(1000000L) // FIXME
                         .parseClaimsJws(token.replace(SecurityConstants.TOKEN_PREFIX, ""))
                         .getBody()
                         .getSubject();

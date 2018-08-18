@@ -14,6 +14,7 @@ public class UserSpace {
     private String name;
     private String password;
     private Folder rootFolder;
+    private Boolean isCurrent;
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -47,6 +48,11 @@ public class UserSpace {
         return rootFolder;
     }
 
+    @Column(name = "is_current", nullable = false)
+    public Boolean getCurrent() {
+        return isCurrent;
+    }
+
     public void setGid(String gid) {
         this.gid = gid;
     }
@@ -65,5 +71,9 @@ public class UserSpace {
 
     public void setRootFolder(Folder rootFolder) {
         this.rootFolder = rootFolder;
+    }
+
+    public void setCurrent(Boolean current) {
+        isCurrent = current;
     }
 }

@@ -28,7 +28,7 @@ public class DocumentController {
             return ResponseEntity.badRequest().build();
         }
 
-        if(userDriveFacade.isInSpace(userProfile.getCurrentUserSpace(), document) == false){
+        if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), document) == false){
             return ResponseEntity.notFound().build();
         }
 
@@ -45,7 +45,7 @@ public class DocumentController {
             return ResponseEntity.badRequest().build();
         }
 
-        if(userDriveFacade.isInSpace(userProfile.getCurrentUserSpace(), document) == false){
+        if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), document) == false){
             return ResponseEntity.notFound().build();
         }
 

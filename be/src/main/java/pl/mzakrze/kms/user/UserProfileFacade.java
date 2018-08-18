@@ -59,16 +59,15 @@ public class UserProfileFacade {
         userSpace.setName("default");
         userSpace.setRootFolder(folder);
         userSpace.setUserProfile(userProfile);
+        userSpace.setCurrent(true);
 
-        userProfile.setCurrentUserSpace(userSpace);
-        userProfileRepository.save(userProfile);
+        userSpaceRepository.save(userSpace);
 
         return userProfile;
     }
 
     public void closeAccountPermanently(UserProfile userProfile) {
         List<UserSpace> userSpaces = userSpaceRepository.findByUserProfile(userProfile);
-        userProfile.setCurrentUserSpace(null);
         userProfileRepository.save(userProfile);
         for (UserSpace userSpace : userSpaces) {
             Folder rootFolder = userSpace.getRootFolder();

@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface UserSpaceRepository extends JpaRepository<UserSpace, String> {
     List<UserSpace> findByUserProfile(UserProfile userProfile);
+
+    UserSpace findByUserProfileAndCurrent(UserProfile userProfile, boolean isCurrent);
 }
