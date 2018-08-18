@@ -19,6 +19,6 @@ export default class DrivePage extends React.Component<Props> {
 
 
     render(){
-        return (<p> Hello, this is drive page </p>);
+        return (<p> This is my-account page </p>);
     }
 }

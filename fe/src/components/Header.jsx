@@ -1,25 +1,62 @@
 /* @flow */
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Switch, withRouter, Redirect } from 'react-router-dom';
-import { CurrentUser } from '../index.jsx';
 
+import {Link, BrowserRouter as Router } from 'react-router-dom';
 
-type Props = {
-    currentUser: any,
+const api = {
+
 }
 
-export default class Header extends React.Component<Props> {
+type Props = {
 
-    constructor(props){
-        super(props);
-        this.state = {
-            
-        }   
+}
+
+type State = {
+
+}
+
+export default class Header extends React.Component<Props, State> {
+    redirectUrl: string; // {"drive" | "teams" | "my-account"}
+
+	constructor(props: Props){
+		super(props);
+		this.redirectUrl = null;
+		this.state = {
+		}
+	}
+
+    componentDidMount() {
+
     }
 
+	renderMyAccountInfo(){
+		return (<p>
+		    TODO
+		    <hr />
+		    <Link to='my-account'>Edit</Link>
+		    </p>);
+	}
 
-    render(){
-        return (<p> This is header </p>);
+    handleUserLogout() {
+        localStorage.removeItem('JwtAuthentication');
+        window.location = '/'
     }
+
+	render(){
+		return (
+			<div className="header">
+				<ul className="nav nav-bar pull-right">
+                    <Link className="p-2 text-dark" to="/drive">Drive</Link>
+                    <Link className="p-2 text-dark" to="/my-account">My account</Link>
+                    <button className="btn btn-outline-primary" onClick={this.handleUserLogout}>Log out</button>
+				</ul>
+				<Link to="/">
+					<h3>
+					<img src={'./static/DokuWikiLogo.png'} width="50" height="50"/>
+					KMS
+					</h3>
+				</Link>
+                <hr />
+			</div>);
+	}
 }

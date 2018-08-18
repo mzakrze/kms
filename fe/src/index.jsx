@@ -1,9 +1,10 @@
 /* @flow */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { HashRouter as Router, Route, Switch, withRouter, Redirect } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import WelcomeUnknownPage from './components/WelcomeUnknownPage.jsx'
 import DrivePage from './components/DrivePage.jsx'
+import MyAccountPage from './components/MyAccountPage.jsx'
 import Header from './components/Header.jsx'
 import * as util from './util.jsx';
 
@@ -61,7 +62,9 @@ class App extends React.Component<Props> {
     constructor(props){
         super(props);
         this.state = {
-            currentUser: null,
+            currentUser: {
+                anonymous: true,
+            }
         }
     }
 
@@ -111,29 +114,40 @@ class App extends React.Component<Props> {
     }
 
     render() {
-        if(this.state.currentUser == null || this.state.currentUser.anonymous == null) {
+        if(this.state.currentUser == null || this.state.currentUser.anonymous) {
+            if(document.location.pathname != '/' && document.location.pathname != ''){
+                window.location = '/';
+            }
             return <WelcomeUnknownPage 
                 attemptLogin={this.handleLogin.bind(this)}
                 attemptRegister={this.handleRegister.bind(this)}
                 attemptGoTryMode={this.handleTryMode.bind(this)} />
         }
-        
-        return (<Router>
-            <Switch>
-                <Route path="/" render={this.renderDrivePage.bind(this)} />
-            </Switch>
-        </Router>);
+        return (
+            <BrowserRouter>
+                <div>
+                    <Route path="/my-account" render={this.renderMyAccountPage.bind(this)} />
+                    <Route exact path="/" render={this.renderDrivePage.bind(this)} />
+                    <Route path="/drive" render={this.renderDrivePage.bind(this)} />
+                </div>
+        </BrowserRouter>);
     }
 
-    renderDrivePage(routerProps){
+    renderDrivePage(routerProps) {
         // strona domyślna - zmień url
-        //debugger;
         if(routerProps.location.pathname != '/drive'){
             routerProps.history.push('drive')
         }
         return (<div>
             <Header />
             <DrivePage />
+            </div>);
+    }
+
+    renderMyAccountPage(routerProps){
+        return (<div>
+            <Header />
+            <MyAccountPage />
             </div>);
     }
 }
