@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import WelcomeUnknownPage from './components/WelcomeUnknownPage.jsx'
-import DrivePage from './components/DrivePage.jsx'
+import DrivePage from './components/drive/DrivePage.jsx'
 import MyAccountPage from './components/MyAccountPage.jsx'
 import Header from './components/Header.jsx'
 import * as util from './util.jsx';

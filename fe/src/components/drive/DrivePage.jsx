@@ -6,7 +6,7 @@ import DriveManagerHeader from './DriveManagerHeader.jsx';
 import FolderPath from './FolderPath.jsx';
 import NodeTable from './NodeTable.jsx';
 import TreeExplorer from './TreeExplorer.jsx';
-import {beforeSendRequest} from './../util.jsx';
+import {beforeSendRequest} from './../../util.jsx';
 
 const api = {
     fetchDriveTree: () => {
@@ -64,7 +64,6 @@ export default class DrivePage extends React.Component<Props, State> {
     }
 
     handleCurrentFolderChange(nodeGid){
-        debugger;
         let currentFolder;
         let treeSearchStack = [];
         let searchTree = (node) => {

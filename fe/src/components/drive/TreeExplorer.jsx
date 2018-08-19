@@ -5,8 +5,8 @@ import {Link } from 'react-router-dom';
 
 import { DriveFolder } from './DrivePage.jsx';
 
-import './../../vendor/bootstrap-treeview.min.js';
-import './../../vendor/bootstrap-treeview.min.css';
+import './../../../vendor/bootstrap-treeview.min.js';
+import './../../../vendor/bootstrap-treeview.min.css';
 
 type Props = {
     driveRoot: DriveFolder,
