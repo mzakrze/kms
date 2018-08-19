@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import WelcomeUnknownPage from './components/WelcomeUnknownPage.jsx'
 import DrivePage from './components/drive/DrivePage.jsx'
+import DocEditor from './components/doc/DocEditor.jsx' // TODO - rename DocEditorPage
 import MyAccountPage from './components/MyAccountPage.jsx'
 import Header from './components/Header.jsx'
 import * as util from './util.jsx';
@@ -129,6 +130,7 @@ class App extends React.Component<Props> {
                     <Route path="/my-account" render={this.renderMyAccountPage.bind(this)} />
                     <Route exact path="/" render={this.renderDrivePage.bind(this)} />
                     <Route path="/drive" render={this.renderDrivePage.bind(this)} />
+                    <Route path="/doc/:gid" render={this.renderDocumentPage.bind(this)} />
                 </div>
         </BrowserRouter>);
     }
@@ -148,6 +150,15 @@ class App extends React.Component<Props> {
         return (<div>
             <Header />
             <MyAccountPage />
+            </div>);
+    }
+
+    renderDocumentPage(routerProps){
+        let docGid = routerProps.match.params.gid;
+        return (<div>
+            <Header />
+            <DocEditor 
+                docGid={docGid}/>
             </div>);
     }
 }
