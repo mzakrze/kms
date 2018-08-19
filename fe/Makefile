@@ -10,6 +10,7 @@ build-frontend:
 		-v $(shell pwd)/.babelrc:/usr/frontend_app/.babelrc \
 		-v $(shell pwd)/.flowconfig:/usr/frontend_app/.flowconfig \
 		-v $(shell pwd)/src:/usr/frontend_app/src \
+		-v $(shell pwd)/vendor:/usr/frontend_app/vendor \
 		-v $(shell pwd)/dist:/usr/frontend_app/dist \
 	 	fe /bin/bash -c "npm run production-build; cp -R /dist ." 
 
@@ -21,6 +22,7 @@ start:
 		-v $(shell pwd)/.babelrc:/usr/frontend_app/.babelrc \
 		-v $(shell pwd)/.flowconfig:/usr/frontend_app/.flowconfig \
 		-v $(shell pwd)/src:/usr/frontend_app/src \
+		-v $(shell pwd)/vendor:/usr/frontend_app/vendor \
 	 	fe npm run start
 	 
 
