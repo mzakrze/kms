@@ -8,6 +8,14 @@ import { beforeSendRequest } from './../../util.jsx';
 
 
 const api = {
+    requestDownloadAsMarkdown: (docGid: string) => {
+        return $.ajax({
+            url: '/api/doc/download/' + docGid + '?download_as=raw_markdown',
+            type: "GET",
+            async: false,
+            beforeSend: beforeSendRequest,
+        });
+    }
 }
 
 type Props = {
@@ -51,6 +59,10 @@ export default class DocumentEditor extends React.Component<Props, State> {
                 <div className="panel panel-default">
                     <div className="panel-heading">
                         <h3 className="pull-left" contentEditable="true">{this.state.title}</h3>
+                        <button className="btn btn-default pull-right"
+                            onClick={() => {
+                            api.requestDownloadAsMarkdown(this.props.docGid);
+                        }}>Download as markdown</button>
                         {this.state.synchronized ?
                             (this.state.mode == 'view' ? <p></p> : <p className="pull-left" ></p>)
                             :

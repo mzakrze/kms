@@ -1,5 +1,6 @@
 package pl.mzakrze.kms.user_drive;
 
+import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.mzakrze.kms.api.model.DriveTree_out;
@@ -23,8 +24,12 @@ public class UserDriveFacade {
     @Autowired private TagRepository tagRepository;
     @Autowired private UserSpaceRepository userSpaceRepository;
 
-
-
+    public Boolean hasPermissions(UserProfile userProfile, Document document){
+        Preconditions.checkNotNull(userProfile);
+        Preconditions.checkNotNull(document);
+        UserSpace currentSpace = getCurrentSpace(userProfile);
+        return isInSpace(currentSpace, document);
+    }
 
     public DriveTree_out.Folder getCurrentSpaceDrive(UserProfile userProfile) {
         UserSpace space = userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
@@ -113,6 +118,8 @@ public class UserDriveFacade {
     }
 
     public UserSpace getCurrentSpace(UserProfile userProfile) {
-        return userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
+        UserSpace space = userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
+        Preconditions.checkNotNull(space);
+        return space;
     }
 }
