@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class Document {
     private String gid;
     private String title;
-    private String content; // FIXME - make it a blob
+    private byte[] content;
     private Folder parentFolder;
 
     @Id
@@ -27,8 +27,8 @@ public class Document {
         return title;
     }
 
-    @Column(name = "content", length = 32768)
-    public String getContent() {
+    @Column(name = "content")
+    public byte[] getContent() {
         return content;
     }
 
@@ -47,7 +47,7 @@ public class Document {
         this.title = title;
     }
 
-    public void setContent(String content) {
+    public void setContent(byte[] content) {
         this.content = content;
     }
 

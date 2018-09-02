@@ -44,7 +44,7 @@ public class UserProfileFacade {
         userProfileRepository.save(userProfile);
 
         Document document = new Document();
-        document.setContent("This is a welcome to document"); // TODO wynieść tworzenie gdzie indziej + uzupełnić
+        document.setContent("This is a welcome to document".getBytes());  // TODO wynieść tworzenie gdzie indziej + uzupełnić
         document.setTitle("Welcome");
 
         Folder folder = new Folder();

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.method.annotation.PathVariableMethodArgumentResolver;
 import pl.mzakrze.kms.api.model.DocContent_in;
 import pl.mzakrze.kms.api.model.DocumentMeta_in;
 import pl.mzakrze.kms.api.model.GetDoc_out;
@@ -17,8 +16,6 @@ import pl.mzakrze.kms.user_drive.model.UserSpace;
 import pl.mzakrze.kms.user_drive.repository.DocumentRepository;
 import pl.mzakrze.kms.user_drive.repository.TagRepository;
 import pl.mzakrze.kms.user_drive.repository.UserSpaceRepository;
-
-import java.nio.file.Path;
 
 @RestController
 @RequestMapping("/api/doc")
@@ -37,7 +34,7 @@ public class DocumentController {
         boolean hasPermissions = userDriveFacade.isInSpace(userSpace, document);
         if(hasPermissions){
             GetDoc_out res = new GetDoc_out();
-            res.markdownContent = document.getContent();
+            res.markdownContent = new String(document.getContent());
             // res.tags = FIXME
             res.title = document.getTitle();
             return ResponseEntity.ok(res);
@@ -56,8 +53,7 @@ public class DocumentController {
         if(userDriveFacade.isInSpace(userDriveFacade.getCurrentSpace(userProfile), document) == false){
             return ResponseEntity.notFound().build();
         }
-
-        document.setContent(req.content);
+        document.setContent(req.content.getBytes());
         documentRepository.save(document);
 
         return ResponseEntity.ok().build();
