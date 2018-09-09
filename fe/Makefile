@@ -2,6 +2,7 @@ all:
 	build & start
 
 build-frontend:
+	docker container rm fe
 	docker container run --name fe -it -p 3000:3000 \
 		-v $(shell pwd)/../VERSION:/usr/frontend_app/VERSION \
 		-v $(shell pwd)/package.json:/usr/frontend_app/package.json \

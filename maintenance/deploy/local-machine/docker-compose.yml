@@ -1,0 +1,11 @@
+version: '3.5'
+services:
+  web:
+    image: kms:0.0.1
+    secrets:
+      - application_properties
+    ports:
+    - "9898:8080"
+secrets:
+  application_properties:
+    file: secrets/application.properties
