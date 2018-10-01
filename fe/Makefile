@@ -28,7 +28,7 @@ start:
 	 
 
 stop: # TODO - make it gracefull
-	docker container kill fe
+	docker container kill fe 2> /dev/null; true
 	docker container rm fe
 
 build:

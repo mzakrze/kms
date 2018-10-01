@@ -8,7 +8,7 @@ const api = {
 }
 
 type Props = {
-
+	routerProps: any;
 }
 
 type State = {
@@ -38,7 +38,7 @@ export default class Header extends React.Component<Props, State> {
 	}
 
     handleUserLogout() {
-        localStorage.removeItem('JwtAuthentication');
+		localStorage.removeItem('JwtAuthentication');
         window.location = '/'
     }
 

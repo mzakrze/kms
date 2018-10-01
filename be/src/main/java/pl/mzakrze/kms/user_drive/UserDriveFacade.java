@@ -2,6 +2,7 @@ package pl.mzakrze.kms.user_drive;
 
 import com.google.common.base.Preconditions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.mzakrze.kms.api.model.DriveTree_out;
 import pl.mzakrze.kms.user.UserProfile;
@@ -23,6 +24,7 @@ public class UserDriveFacade {
     @Autowired private FileRepository fileRepository;
     @Autowired private TagRepository tagRepository;
     @Autowired private UserSpaceRepository userSpaceRepository;
+    @Autowired private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public Boolean hasPermissions(UserProfile userProfile, Document document){
         Preconditions.checkNotNull(userProfile);
@@ -121,5 +123,14 @@ public class UserDriveFacade {
         UserSpace space = userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
         Preconditions.checkNotNull(space);
         return space;
+    }
+
+    public Boolean checkSpaceAccess(UserProfile userProfile, String spaceName, String password) {
+        UserSpace userSpace = userSpaceRepository.findByUserProfileAndName(userProfile, spaceName);
+        if(userSpace == null){
+            return false;
+        }
+        String encodedPassword = bCryptPasswordEncoder.encode(password);
+        return encodedPassword.equals(userSpace.getPassword());
     }
 }

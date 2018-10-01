@@ -141,14 +141,16 @@ class App extends React.Component<Props> {
             routerProps.history.push('drive')
         }
         return (<div>
-            <Header />
+            <Header 
+                routerProps={routerProps}/>
             <DrivePage />
             </div>);
     }
 
     renderMyAccountPage(routerProps){
         return (<div>
-            <Header />
+            <Header 
+                routerProps={routerProps}/>
             <MyAccountPage />
             </div>);
     }
@@ -156,7 +158,8 @@ class App extends React.Component<Props> {
     renderDocumentPage(routerProps){
         let docGid = routerProps.match.params.gid;
         return (<div>
-            <Header />
+            <Header 
+                routerProps={routerProps}/>
             <DocEditor 
                 docGid={docGid}/>
             </div>);

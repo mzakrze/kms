@@ -30,18 +30,25 @@ public class DocumentController {
 
     @GetMapping("/{gid}")
     public ResponseEntity getDoc(UserProfile userProfile, @PathVariable String gid){
-        Document document = documentRepository.getOne(gid);
+        Document document = documentRepository.findOne(gid);
+        if(document == null){
+            return ResponseEntity.notFound().build();
+        }
         UserSpace userSpace = userSpaceRepository.findByUserProfileAndCurrent(userProfile, true);
         boolean hasPermissions = userDriveFacade.isInSpace(userSpace, document);
         if(hasPermissions){
             GetDoc_out res = new GetDoc_out();
-            res.markdownContent = new String(document.getContent());
+            res.markdownContent = emptyOnNull(document.getContent());
             // res.tags = FIXME
             res.title = document.getTitle();
             return ResponseEntity.ok(res);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+    }
+
+    private String emptyOnNull(byte[] s){
+        return s == null ? "" : new String(s);
     }
 
     @GetMapping("/download/{gid}")

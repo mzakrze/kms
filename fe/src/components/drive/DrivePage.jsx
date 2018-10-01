@@ -111,6 +111,7 @@ export default class DrivePage extends React.Component<Props, State> {
                         pathToCurrFolder: [data.root],
                     })
                 } else {
+                    let currentFolder = null;
                     // znajdź po gid'dzie zapamiętując ścieżkę
                     let path = [];
                     let findByGidStoringPath = (folder, path) => {

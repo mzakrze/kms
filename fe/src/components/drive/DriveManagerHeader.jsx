@@ -120,7 +120,7 @@ class NewNodeModal extends React.Component<NewNodeModalProps, NewNodeModalState>
     }
 
     onSubmit(ev: any) {
-
+        ev.preventDefault()
         if(this.type == 'doc'){
             let parentFolderGid = this.props.folder.gid;
             let title = this.documentTitle;

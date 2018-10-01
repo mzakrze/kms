@@ -6,7 +6,18 @@ import {Link } from 'react-router-dom';
 import {Node} from './DrivePage.jsx';
 import NodeFilters  from './NodeFilters.jsx';
 import { Redirect } from 'react-router-dom';
-
+import { beforeSendRequest } from './../../util.jsx';
+const api = {
+    deleteNodeCascade: (nodeGid:string) => {
+        return $.ajax({
+            url: '/api/drive/remove/' + nodeGid,
+            type: "DELETE",
+            async: false,
+            headers: {"Content-Type": "application/json"},
+            beforeSend: beforeSendRequest,
+        });
+    }
+}
 
 type Props = {
     currentFolder: Node,
