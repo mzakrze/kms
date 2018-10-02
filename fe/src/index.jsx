@@ -1,7 +1,7 @@
 /* @flow */
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch, Redirect} from 'react-router-dom'
 import WelcomeUnknownPage from './components/WelcomeUnknownPage.jsx'
 import DrivePage from './components/drive/DrivePage.jsx'
 import DocEditor from './components/doc/DocEditor.jsx' // TODO - rename DocEditorPage
@@ -113,8 +113,19 @@ class App extends React.Component<Props> {
                 })
             })
     }
-
+    
     render() {
+        if(window.location.search.indexOf('path=') != -1){
+            let search = window.location.search;
+            let i = search.indexOf('path=');
+            let url = search.substring(i + 'path='.length);
+            url = url.substring(1, url.length);
+            return (<BrowserRouter>
+                <div>
+                <Redirect to={url} />
+                </div>
+        </BrowserRouter>);
+        }
         if(this.state.currentUser == null || this.state.currentUser.anonymous) {
             if(document.location.pathname != '/' && document.location.pathname != ''){
                 window.location = '/';

@@ -22,8 +22,6 @@ export default class TreeExplorer extends React.Component<Props, State> {
         super(props);
     }
 
-    
-
     componentDidUpdate(prevProps, prevState) {
         if(this.props.driveRoot != null){
             this.reloadTreeView(this.props.driveRoot);

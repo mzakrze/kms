@@ -51,11 +51,6 @@ var webpackConfig = {
     port: 3000,
     historyApiFallback: true, 
     contentBase: './',
-    proxy: { // proxy URLs to backend development server
-      '/api/**': {
-        target: 'http://' + hostIp + ':8080'
-      },
-    },
   },
   plugins: [
     HtmlWebpackPluginConfig,

@@ -53,6 +53,7 @@ params['spring.datasource.username'] = prod_db_credentials['user']
 params['spring.datasource.password'] = prod_db_credentials['password']
 params['spring.jpa.hibernate.ddl-auto'] = 'validate'
 params['application.version'] = APP_VERSION
+params['application.environment'] = 'production'
 parser['kms_application_properties'] = params
 with open(PROJECT_ROOT + '/maintenance/deploy/local-machine/secrets/application.properties', 'w') as configfile:
     parser.write(configfile)
